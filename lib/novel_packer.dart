@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:bili_novel_packer/assets/assets.dart';
-import 'package:bili_novel_packer/epub_packer/epub_navigator.dart';
+import 'package:bili_novel_packer/epub_packer/epub_navigator_ncx.dart';
 import 'package:bili_novel_packer/epub_packer/epub_packer.dart';
 import 'package:bili_novel_packer/light_novel/base/light_novel_cover_detector.dart';
 import 'package:bili_novel_packer/light_novel/base/light_novel_model.dart';
@@ -359,8 +359,7 @@ class NovelPacker {
 
   String _appendXmlDeclare(String html) {
     String xmlDeclare = """<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html>
 """;
     return xmlDeclare + html;
   }

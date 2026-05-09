@@ -3,7 +3,7 @@ import 'package:bili_novel_packer/util/sequence.dart';
 import 'package:xml/xml.dart';
 
 /// toc.ncx
-class EpubNavigator implements EpubNode {
+class EpubNavigatorNcx implements EpubNode {
   final XmlBuilder _builder = XmlBuilder();
   late final _Head _head;
   late final _DocTitle _docTitle;
@@ -17,7 +17,7 @@ class EpubNavigator implements EpubNode {
 
   set bookUuid(String bookUuid) => _head.bookUuid = bookUuid;
 
-  EpubNavigator() {
+  EpubNavigatorNcx() {
     _head = _Head(_builder);
     _docTitle = _DocTitle(_builder);
     _navMap = _NavMap(_builder);
