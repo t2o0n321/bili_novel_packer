@@ -1,9 +1,9 @@
-import 'package:bili_novel_packer/epub_packer/epub_navigator.dart';
+import 'package:bili_novel_packer/epub_packer/epub_navigator_ncx.dart';
 import 'package:test/scaffolding.dart';
 
 void main() {
   test("EpubNavigator Test", () {
-    var nav = EpubNavigator();
+    var nav = EpubNavigatorNcx();
     nav.bookUuid = "dffb4170-fc27-4122-9103-aec8afd91ab7";
     nav.docTitle = "测试测试";
     nav.addNavPoint(NavPoint("第一章", src: "chapter001.xhtml"));
@@ -14,7 +14,7 @@ void main() {
   });
 
   test("EpubNavigator Nested", () {
-    var nav = EpubNavigator();
+    var nav = EpubNavigatorNcx();
     nav.bookUuid = "dffb4170-fc27-4122-9103-aec8afd91ab7";
     nav.docTitle = "测试测试";
     nav.addNavPoint(

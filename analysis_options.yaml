@@ -18,6 +18,8 @@ include: package:lints/recommended.yaml
 linter:
  rules:
    - always_use_package_imports
+formatter:
+  trailing_commas: preserve
 
 # analyzer:
 #   exclude:
