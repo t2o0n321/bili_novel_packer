@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:bili_novel_packer/light_novel/base/light_novel_model.dart';
 import 'package:bili_novel_packer/light_novel/base/light_novel_source.dart';
+import 'package:bili_novel_packer/light_novel/bili_novel/bili_chapterlog.dart';
 import 'package:bili_novel_packer/light_novel/bili_novel/bili_novel_secret.dart';
 import 'package:bili_novel_packer/log.dart';
 import 'package:bili_novel_packer/scheduler/scheduler.dart';
@@ -11,7 +12,6 @@ import 'package:bili_novel_packer/util/html_util.dart';
 import 'package:bili_novel_packer/util/http_util.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart';
-import 'package:synchronized/synchronized.dart';
 
 class BiliNovelSource implements LightNovelSource {
   static final RegExp _exp =
@@ -25,11 +25,15 @@ class BiliNovelSource implements LightNovelSource {
 
   static final String cookie = "night=0";
 
-  static Lock lock = Lock();
-  static bool warnFlag = false;
-
   static final Scheduler _scheduler = Scheduler(15, Duration(minutes: 1));
   static final Scheduler _imageScheduler = Scheduler(10, Duration(seconds: 1));
+
+  late final BiliChapterLogResolver _chapterLogResolver =
+      BiliChapterLogResolver(
+    domain: domain,
+    loadScript: _httpGetString,
+    logInfo: (message) => logger.i(message),
+  );
 
   @override
   final String name = "哔哩轻小说";
@@ -314,38 +318,7 @@ class BiliNovelSource implements LightNovelSource {
   }
 
   Future<Map<String, int>?> _getShuffleParams(Document doc) async {
-    return await lock.synchronized(() async {
-      var script = doc
-          .querySelectorAll("script")
-          .where(
-              (s) => s.attributes["src"]?.contains("chapterlog.js?v") ?? false)
-          .firstOrNull;
-      if (script == null) {
-        return null;
-      }
-      int? chapterId = int.tryParse(
-        RegExp("chapterid:'(\\d+)'").firstMatch(doc.outerHtml)?.group(1) ?? '',
-      );
-      String jsSrc = script.attributes["src"]!;
-      String currentVersion = "v1006c1.3";
-      String matchedVersion = jsSrc.substring(jsSrc.lastIndexOf("v"));
-      if (currentVersion != matchedVersion && !warnFlag) {
-        print(
-            "[警告]: chapterlog版本号不匹配，当前版本: $currentVersion, 实际版本: $matchedVersion, 可能导致章节内容顺序错乱");
-        warnFlag = true;
-      }
-
-      if (chapterId == null) {
-        return null;
-      }
-      return {
-        "fixedLength": 20,
-        "seed": chapterId * 126 + 232,
-        "a": 9302,
-        "c": 49397,
-        "mod": 233280
-      };
-    });
+    return _chapterLogResolver.getShuffleParams(doc);
   }
 
   _shuffle(Element content, Map<String, int> shuffleParams) {
