@@ -16,7 +16,7 @@ import 'package:html/parser.dart';
 class BiliNovelSource implements LightNovelSource {
   static final RegExp _exp =
       RegExp("(?:linovelib|bilinovel)\\.com/(?:novel|download)/(\\d+)");
-  static final String domain = "https://www.bilinovel.com";
+  static final String domain = "https://m.bilinovel.com";
 
   static final Map<String, String> secretMap = {};
 
@@ -39,7 +39,7 @@ class BiliNovelSource implements LightNovelSource {
   final String name = "哔哩轻小说";
 
   @override
-  final String sourceUrl = "https://www.bilinovel.com";
+  final String sourceUrl = "https://m.bilinovel.com";
 
   static Future<void> init() async {
     BiliNovelSource.secretMap.clear();
